@@ -1,13 +1,25 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import React, { useEffect, useState } from 'react';
+import Header from '../components/Header';
 
-const inter = Inter({ subsets: ['latin'] })
+const Home = () => {
+  const [stockData, setStockData] = useState(null);
 
-export default function Home() {
+  useEffect(() => {
+    fetch('https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo')
+      .then(response => response.json())
+      .then(data => setStockData(data));
+  }, []);
+
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-    </main>
-  )
-}
+    <div className="container mx-auto">
+      <Header />
+      {stockData && (
+        <div className="p-5">
+          <h2 className="text-xl">IBM: {stockData['Global Quote']['05. price']}</h2>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Home;
